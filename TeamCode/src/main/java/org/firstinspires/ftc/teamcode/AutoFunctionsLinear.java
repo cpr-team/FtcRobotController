@@ -3,6 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 //import com.qualcomm.robotcore.hardware.ColorSensor;
 
 public abstract class AutoFunctionsLinear extends LinearOpMode {
@@ -16,9 +23,13 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotorEx shooter;
 
     //protected ColorSensor color_sensor;
-
+    Limelight3A limelight;
     @Override
     public void runOpMode() throws InterruptedException {
+
+        telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
+        limelight = hardwareMap.get(Limelight3A.class, "limeLight");
+        limelight.pipelineSwitch(1);
         back_left = hardwareMap.get(DcMotor.class, "back_left_motor") ;
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
