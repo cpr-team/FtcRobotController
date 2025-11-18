@@ -14,7 +14,7 @@ public class AutoRed extends AutoFunctionsLinear {
         Integer direction = 1;
         waitForStart();
 
-        drive_distance(2100);
+        /*drive_distance(2100);
 
         rotate_degree(direction * 305);
         drive_distance(-130);
@@ -35,7 +35,7 @@ public class AutoRed extends AutoFunctionsLinear {
         drive_distance(-100);
 
         shoot();
-
+*/
         // rotate_degree(2000);
 
         // drive_distance(3200);

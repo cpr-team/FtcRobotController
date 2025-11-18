@@ -149,13 +149,10 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        int leftTarget = (int)(610 * 200);
-        int rightTarget = (int)(610 * 200);
-        double TPS = (175/60) * 200;
+
 
         waitForStart();
-        shooter.setTargetPosition(leftTarget);
-        intake2.setTargetPosition(rightTarget);
+
 
         shooter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intake2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
