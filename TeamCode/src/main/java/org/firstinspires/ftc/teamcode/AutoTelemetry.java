@@ -31,6 +31,12 @@ public class AutoTelemetry extends AutoFunctionsLinear {
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
                     telemetry.addData("pattern", patterns.get(fr.getFiducialId()));
                 }
+                if (fiducialResults.equals("red")){
+                    rotate_degree(90);
+                }
+                if (fiducialResults.equals("blue")){
+                    rotate_degree(-90);
+                }
             } else {
                 telemetry.addData("Limelight", "No data available");
             }
