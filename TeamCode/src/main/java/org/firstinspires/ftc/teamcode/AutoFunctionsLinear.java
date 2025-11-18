@@ -10,6 +10,10 @@ import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+
+import java.util.Map;
+import java.util.HashMap;
 //import com.qualcomm.robotcore.hardware.ColorSensor;
 
 public abstract class AutoFunctionsLinear extends LinearOpMode {
@@ -18,6 +22,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotor front_left;
     protected DcMotor front_right;
 
+    protected Map<Integer, String> patterns;
     protected DcMotor intake;
     protected DcMotorEx intake2;
     protected DcMotorEx shooter;
@@ -27,9 +32,16 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        patterns = new HashMap<>();
+        patterns.put(21,"gpp");
+        patterns.put(22,"pgp");
+        patterns.put(23,"ppg");
+
+
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
-        limelight.pipelineSwitch(1);
+        limelight.pipelineSwitch(0);
+
         back_left = hardwareMap.get(DcMotor.class, "back_left_motor") ;
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
