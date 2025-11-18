@@ -36,6 +36,8 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         patterns.put(21,"gpp");
         patterns.put(22,"pgp");
         patterns.put(23,"ppg");
+        patterns.put(20,"blue");
+        patterns.put(24,"red");
 
 
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
