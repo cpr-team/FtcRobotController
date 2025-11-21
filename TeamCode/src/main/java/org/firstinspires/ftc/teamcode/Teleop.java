@@ -120,50 +120,50 @@ public class Teleop extends OpMode {
         //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
         telemetry.addData("encoder", back_left.getCurrentPosition());
         telemetry.update();
-//        float left_x = gamepad1.left_stick_x;
-//        float left_y = -gamepad1.left_stick_y;
-//        float right_x = gamepad1.right_stick_x;
-//        boolean Intake = gamepad1.right_bumper;
-//        float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
-//
-//        float fr_drive = -(left_y - left_x - right_x)/max;
-//        float fl_drive = -(left_y + left_x + right_x)/max;
-//        float br_drive = (left_y + left_x - right_x)/max;
-//        float bl_drive = -(left_y - left_x + right_x)/max;
-//        drive(bl_drive, br_drive, fl_drive, fr_drive);
-//
-//        if (gamepad1.right_bumper){
-//
-//            startIntake();
-//        }
-//        else {
-//            stopIntake();
-//        }
-//
-//        if (gamepad1.left_bumper) {
-//            try {
-//                shoot();
-//            }
-//            catch (InterruptedException ie) {
-//            }
-//        }
-//        else if (gamepad1.b){
-//            reverseIntake();
-//        }
-//        if (gamepad1.y){
-//            shooter.setVelocity(5000);
-//            intake2.setVelocity(5000);
-//
-//        }
-//        else if (gamepad1.x){
-//            shooter.setPower(1);
-//
-//        }
-//        else {
-//            shooter.setPower(0);
-//
-//            intake2.setPower(0);
-//        }
+        float left_x = gamepad1.left_stick_x;
+        float left_y = -gamepad1.left_stick_y;
+        float right_x = gamepad1.right_stick_x;
+        boolean Intake = gamepad1.right_bumper;
+        float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
+
+        float fr_drive = -(left_y - left_x - right_x)/max;
+        float fl_drive = -(left_y + left_x + right_x)/max;
+        float br_drive = (left_y + left_x - right_x)/max;
+        float bl_drive = -(left_y - left_x + right_x)/max;
+        drive(bl_drive, br_drive, fl_drive, fr_drive);
+
+        if (gamepad1.right_bumper){
+
+            startIntake();
+        }
+        else {
+            stopIntake();
+        }
+
+        if (gamepad1.left_bumper) {
+            try {
+                shoot();
+            }
+            catch (InterruptedException ie) {
+            }
+        }
+        else if (gamepad1.b){
+            reverseIntake();
+        }
+        if (gamepad1.y){
+            shooter.setVelocity(5000);
+            intake2.setVelocity(5000);
+
+        }
+        else if (gamepad1.x){
+            shooter.setPower(1);
+
+        }
+        else {
+            shooter.setPower(0);
+
+            intake2.setPower(0);
+        }
 
     }
 
