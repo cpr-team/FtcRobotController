@@ -29,11 +29,18 @@ public class AutoTelemetry extends AutoFunctionsLinear {
                 // Access fiducial results
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                    double x = result.getTx();
                     String fr_id = patterns.get(fr.getFiducialId());
                     telemetry.addData("pattern", patterns.get(fr_id));
+                    telemetry.addData("x", x);
 
-                    if (fr_id.equals("red")){
-                        rotate_degree(360);
+                    if (fr_id.equals("red")&& (gamepad1.right_bumper)){
+                        if (x>.7){
+                            rotate_degree(2);
+                        }
+                        if (x<-.7){
+                            rotate_degree(-2);
+                        }
                     }
                     if (fr_id.equals("blue")){
                         rotate_degree(-360);
