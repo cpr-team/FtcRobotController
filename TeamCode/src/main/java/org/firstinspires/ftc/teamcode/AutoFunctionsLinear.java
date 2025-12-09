@@ -29,6 +29,8 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
     //protected ColorSensor color_sensor;
     Limelight3A limelight;
+
+    private double distance;
     @Override
     public void runOpMode() throws InterruptedException {
 
