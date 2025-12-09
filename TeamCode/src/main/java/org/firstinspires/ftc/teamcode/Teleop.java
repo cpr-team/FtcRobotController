@@ -74,8 +74,8 @@ public class Teleop extends OpMode {
     protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
         back_left.setPower(back_left_power);
         back_right.setPower(back_right_power);
-        front_left.setPower(front_left_power);
-        front_right.setPower(front_right_power);
+        front_left.setPower(-front_left_power);
+        front_right.setPower(-front_right_power);
     }
 
 
@@ -86,8 +86,26 @@ public class Teleop extends OpMode {
 
     protected void sort()
     {
-        sorter.setTargetPosition(1000);
+        int sortpos = sorter.getCurrentPosition();
+        int target = sortpos +240;
+        //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        sorter.setTargetPosition(target);
+        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        sorter.setPower(1);
+        telemetry.addData("sorting","yes");
+        telemetry.addData("sorty", sortpos);
+        telemetry.addData("target",target);
+        telemetry.addData("sortpower", sorter.getPower());
+        telemetry.update();
+        if (sortpos == target){
+            sorter.setPower(0);
+        }
+
     }
+
+
+
     protected void stopIntake() {
         intake.setPower(0);
     }
@@ -116,9 +134,9 @@ public class Teleop extends OpMode {
         //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
         telemetry.addData("encoder", back_left.getCurrentPosition());
         telemetry.update();
-        float left_x = gamepad1.left_stick_x;
+        float left_x = gamepad1.right_stick_x;
         float left_y = -gamepad1.left_stick_y;
-        float right_x = gamepad1.right_stick_x;
+        float right_x = -gamepad1.left_stick_x;
         boolean Intake = gamepad1.right_bumper;
         float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
 
@@ -147,8 +165,7 @@ public class Teleop extends OpMode {
             reverseIntake();
         }
         if (gamepad1.y){
-            shooter.setVelocity(1200);
-
+            sort();
         }
         else if (gamepad1.x){
             shooter.setPower(1);
@@ -158,10 +175,10 @@ public class Teleop extends OpMode {
             shooter.setPower(0);
 
         }
-        if (gamepad1.left_trigger >.7)
-        {
-        sort();
-        }
+//        if (gamepad1.left_bumper)
+//        {
+//
+//        }
     }
 
     /*
