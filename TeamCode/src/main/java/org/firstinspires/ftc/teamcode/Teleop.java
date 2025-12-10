@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Teleop;
 
@@ -39,7 +42,9 @@ public class Teleop extends OpMode {
 
     protected DcMotorEx shooter;
     //private limelight3A limelight;
-
+    protected NormalizedColorSensor color;
+    protected boolean intakeMode = true;
+    protected Servo kicker;
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -68,6 +73,11 @@ public class Teleop extends OpMode {
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         shooter.setDirection(DcMotorSimple.Direction.REVERSE);
+        sorter = hardwareMap.get(DcMotorEx.class, "Sorter_motor") ;
+        color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
+        kicker = hardwareMap.get(Servo.class, "kicker");
+
+
         //limelight3A = limelight;
     }
 
@@ -103,6 +113,17 @@ public class Teleop extends OpMode {
         }
 
     }
+    protected void rotateDegrees(int degrees){
+
+
+        //int sortpos = sorter.getCurrentPosition();
+
+        int ticks = 700 * degrees / 360;
+        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        sorter.setTargetPosition(ticks);
+        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        sorter.setPower(1);
+    }
 
 
 
@@ -113,9 +134,28 @@ public class Teleop extends OpMode {
     protected void reverseIntake() {
         intake.setPower(1);
     }
+    protected void kill(){
+        shooter.setVelocity(0);
+        intake.setPower(0);
+        sorter.setPower(0);
+    }
 
     protected void shoot() throws InterruptedException {
-        shooter.setVelocity(100);
+        kill();
+        shooter.setVelocity(1000);
+        Thread.sleep(5000);
+        kicker.setPosition(1);
+        //Thread.sleep(1000);
+        kicker.setPosition(0);
+        //Thread.sleep(1000);
+        rotateDegrees(120);
+        kicker.setPosition(1);
+        //Thread.sleep(1000);
+        kicker.setPosition(0);
+        rotateDegrees(120);
+        kicker.setPosition(1);
+        //Thread.sleep(1000);
+        kicker.setPosition(0);
     }
 
     /*
@@ -153,21 +193,42 @@ public class Teleop extends OpMode {
         else {
             stopIntake();
         }
-
+//      changing to intake mode and shoot mode
         if (gamepad1.left_bumper) {
+            if (intakeMode){
+                rotateDegrees(60);
+                intakeMode = false;
+            }
             try {
                 shoot();
             }
             catch (InterruptedException ie) {
             }
         }
-        else if (gamepad1.b){
+        else {
+            if (!intakeMode){
+                rotateDegrees(60);
+                intakeMode = true;
+            }
+            if (!sorter.isBusy()){
+                shooter.setPower(0);
+            }
+        }
+
+        if (gamepad1.b){
             reverseIntake();
         }
+        //test
         if (gamepad1.y){
-            sort();
+            rotateDegrees(60);
         }
-        else if (gamepad1.x){
+        else {
+            if (!sorter.isBusy()){
+                shooter.setPower(0);
+            }
+        }
+//      set shooter on and off
+        if (gamepad1.x){
             shooter.setPower(1);
 
         }
@@ -175,12 +236,60 @@ public class Teleop extends OpMode {
             shooter.setPower(0);
 
         }
-//        if (gamepad1.left_bumper)
-//        {
-//
-//        }
+        //test color sense
+        if (gamepad1.a)
+        {
+            colorSense();
+        }
+        //kicking out ball
+        if (gamepad1.left_trigger > .5f){
+            kicker.setPosition(1);
+        }
+        else{
+            kicker.setPosition(0);
+        }
     }
 
+    public void colorSense() {
+        NormalizedRGBA colors = color.getNormalizedColors();
+
+        float normalizedRed = colors.red / colors.alpha;
+        float normalizedBlue = colors.blue / colors.alpha;
+        float normalizedGreen = colors.green / colors.alpha;
+
+        Float normalizedRedGreenRatio = normalizedRed / normalizedGreen;
+        if (normalizedRedGreenRatio > .8f && normalizedRedGreenRatio < 1.2f) {
+            telemetry.addData("color", "purple");
+            int sortpos = sorter.getCurrentPosition();
+            int target = sortpos +240;
+            //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            sorter.setTargetPosition(target);
+            sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            sorter.setPower(1);
+            if (sortpos == target) {
+                sorter.setPower(0);
+            }
+        }
+        else if (normalizedGreen > 1.2f) {
+            telemetry.addData("color", "green");
+            int sortpos = sorter.getCurrentPosition();
+            int target = sortpos +240;
+            //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            sorter.setTargetPosition(target);
+            sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            sorter.setPower(1);
+            if (sortpos == target) {
+                sorter.setPower(0);
+            }
+        }
+        else {
+            telemetry.addData("color", "black");
+        }
+
+        telemetry.update();
+    }
     /*
      * Code to run ONCE after the driver hits STOP
      */
