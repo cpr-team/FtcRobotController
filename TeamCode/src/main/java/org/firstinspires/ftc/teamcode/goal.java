@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoFunctionsLinear;
 
-@Autonomous (name = "AutoBlue")
-public class AutoBlue extends AutoFunctionsLinear {
+@Autonomous (name = "goal")
+public class goal extends AutoFunctionsLinear {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -14,7 +14,8 @@ public class AutoBlue extends AutoFunctionsLinear {
         Integer direction = -1;
         waitForStart();
 //2100
-        drive_distance(-1000);
+        drive_distance(-1500);
+        shoot();
 //
 //        //rotateDegrees(direction * 290);
 //        drive_distance(-330);

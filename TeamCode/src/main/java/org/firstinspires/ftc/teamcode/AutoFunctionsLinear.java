@@ -8,6 +8,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -21,13 +22,18 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotor back_right;
     protected DcMotor front_left;
     protected DcMotor front_right;
-
+    protected DcMotorEx sorter;
     protected Map<Integer, String> patterns;
     protected DcMotor intake;
     protected DcMotorEx intake2;
     protected DcMotorEx shooter;
 
     //protected ColorSensor color_sensor;
+    protected boolean intakeMode = true;
+
+    protected int degree_count = 0;
+
+    protected Servo kicker;
     Limelight3A limelight;
 
     private double distance;
@@ -51,7 +57,6 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
         back_right = hardwareMap.get(DcMotor.class, "back_right_motor") ;
         back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         front_left = hardwareMap.get(DcMotor.class, "front_left_motor") ;
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -68,6 +73,9 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
+        sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
     }
 
@@ -95,10 +103,10 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected void drive_distance(int distance) {
         stopAndResetAll();
 
-        back_left.setTargetPosition(distance);
+        back_left.setTargetPosition(-distance);
         back_right.setTargetPosition(distance);
         front_left.setTargetPosition(distance);
-        front_right.setTargetPosition(distance);
+        front_right.setTargetPosition(-distance);
 
         runToPosition();
 
@@ -115,7 +123,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         drive(0,0,0,0);
     }
 
-    protected void rotate_degree(int degree) {
+    /*protected void rotate_degree(int degree) {
         stopAndResetAll();
 
         back_left.setTargetPosition(degree);
@@ -126,8 +134,28 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         runToPosition();
 
         runUntilFinished();
-    }
+    }*/
+    protected void rotateDegrees(int degrees) {
 
+
+        //int sortpos = sorter.getCurrentPosition();
+
+        int ticks = 820 * degrees / 360;
+        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        if (degree_count > 1080) {
+            ticks -= 1;
+            degree_count = 0;
+        }
+        sorter.setTargetPosition(ticks);
+        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        sorter.setVelocity(1000);
+
+        // degree_count += degrees;
+
+        while (sorter.isBusy()) {
+
+        }
+    }
     protected void startIntake() {
         intake.setPower(-1);
         intake2.setPower(-1);
@@ -138,15 +166,46 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         intake.setPower(0);
         intake2.setPower(0);
     }
-
     protected void shoot() throws InterruptedException {
+        //kill();
+        if (intakeMode){
+            rotateDegrees(60);
+            intakeMode = false;
+        }
+        shooter.setPower(1);
+        Thread.sleep(3000);
+        shooter.setPower(0);
+        shooter.setVelocity(7);
+        telemetry.addData("velocity", shooter.getVelocity());
+        telemetry.update();
+        Thread.sleep(4000);
+        kicker.setPosition(0);
+        Thread.sleep(1500);
+        kicker.setPosition(1);
+        Thread.sleep(2000);
+        rotateDegrees(120);
+        Thread.sleep(2000);
+        kicker.setPosition(0);
+        Thread.sleep(1500);
+        kicker.setPosition(1);
+        Thread.sleep(2000);
+        rotateDegrees(120);
+        Thread.sleep(1500);
+        kicker.setPosition(0);
+        Thread.sleep(1500);
+        kicker.setPosition(1);
+        intakeMode = true;
+        rotateDegrees(60);
+
+    }
+    /*protected void shoot() throws InterruptedException {
         /*shooter.setPower(-1);
         Thread.sleep(1500);
         intake2.setPower(-1);
         Thread.sleep(1500);
         shooter.setPower(0);
         intake2.setPower(0);
-        */
+
         waitForStart();
         shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -165,7 +224,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         while (opModeIsActive() && (shooter.isBusy() && intake2.isBusy())){
 
         }
-    }
+    }*/
     /*
     protected void shoot_with_velocity()throws InterruptedException{
 

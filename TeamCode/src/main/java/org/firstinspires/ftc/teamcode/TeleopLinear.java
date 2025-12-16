@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Teleop;
  * added to the Driver Station.
  */
 @TeleOp
-public class Teleop extends OpMode {
+public class TeleopLinear extends LinearOpMode {
 
 
     protected DcMotor back_left;
@@ -47,11 +48,12 @@ public class Teleop extends OpMode {
     protected Servo kicker;
     protected int degree_count = 0;
 
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
-    public void init() {
+    public void runOpMode() {
 
         back_left = hardwareMap.get(DcMotor.class, "back_left_motor") ;
         back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -79,6 +81,95 @@ public class Teleop extends OpMode {
         kicker = hardwareMap.get(Servo.class, "kicker");
 
         //limelight3A = limelight;
+        waitForStart();
+        //shooter.setVelocity(4);
+        while (opModeIsActive()) {
+           // shooter.setVelocity(4);
+
+            //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
+            telemetry.addData("encoder", back_left.getCurrentPosition());
+            telemetry.update();
+            float left_x = gamepad1.right_stick_x;
+            float left_y = -gamepad1.left_stick_y;
+            float right_x = -gamepad1.left_stick_x;
+            boolean Intake = gamepad1.right_bumper;
+            float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
+
+            float fr_drive = -(left_y - left_x - right_x)/max;
+            float fl_drive = -(left_y + left_x + right_x)/max;
+            float br_drive = (left_y + left_x - right_x)/max;
+            float bl_drive = -(left_y - left_x + right_x)/max;
+            drive(bl_drive, br_drive, fl_drive, fr_drive);
+
+            if (gamepad1.right_bumper){
+
+                startIntake();
+            }
+            else {
+                stopIntake();
+            }
+//      changing to intake mode and shoot mode
+            if (gamepad1.left_bumper) {
+
+                try {
+                    shoot();
+                }
+                catch (InterruptedException ie) {
+                }
+            }
+            else {
+//            if (!intakeMode){
+//                rotateDegrees(60);
+//                intakeMode = true;
+//            }
+//                if (!sorter.isBusy()){
+//                    shooter.setPower(0);
+//                }
+            }
+
+            if (gamepad1.b){
+                reverseIntake();
+            }
+            //test
+            if (gamepad1.y){
+                rotateDegrees(120);
+            }
+//            else {
+//                if (!sorter.isBusy()){
+//                    shooter.setPower(0);
+//                }
+//            }
+//      set shooter on and off
+//            if (gamepad1.x){
+//                shooter.setVelocity(1000);
+//
+//            }
+//            else {
+//                shooter.setPower(0);
+//
+//            }
+            //test color sense
+            if (gamepad1.a)
+            {
+                colorSense();
+            }
+            //kicking out ball
+            if (gamepad1.left_trigger > .5f){
+                kicker.setPosition(0);
+            }
+            else{
+                kicker.setPosition(1);
+            }
+            boolean right = gamepad1.dpad_right;
+            boolean left = gamepad1.dpad_left;
+
+            if (right){
+                rotateDegrees(120);
+            }
+            else if (left){
+                rotateDegrees(-120);
+            }
+        }
     }
 
     protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
@@ -90,6 +181,7 @@ public class Teleop extends OpMode {
 
 
     protected void startIntake() {
+
         intake.setPower(-1);
         //colorSense();
     }
@@ -118,17 +210,24 @@ public class Teleop extends OpMode {
 
         //int sortpos = sorter.getCurrentPosition();
 
-        int ticks = 764 * degrees / 360;
+        int ticks = 820 * degrees / 360;
         sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-//        if (degree_count >1080){
-//            ticks -= 1;
-//            degree_count = 0;
-//        }
+        if (degree_count >1080){
+            ticks -= 1;
+            degree_count = 0;
+        }
         sorter.setTargetPosition(ticks);
         sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         sorter.setVelocity(1000);
 
        // degree_count += degrees;
+        boolean unbroken = true;
+        while (sorter.isBusy()&&unbroken){
+            if (gamepad1.leftStickButtonWasPressed()){
+                unbroken = false;
+                break;
+            }
+        }
 
     }
 
@@ -142,7 +241,7 @@ public class Teleop extends OpMode {
         intake.setPower(1);
     }
     protected void kill(){
-        shooter.setVelocity(0);
+        //shooter.setVelocity(0);
         intake.setPower(0);
         sorter.setPower(0);
     }
@@ -153,122 +252,45 @@ public class Teleop extends OpMode {
             rotateDegrees(60);
             intakeMode = false;
         }
-        shooter.setVelocity(1000);
-        Thread.sleep(5000);
+        shooter.setPower(1);
+        Thread.sleep(3000);
+        shooter.setPower(0);
+        shooter.setVelocity(6);
+        telemetry.addData("velocity", shooter.getVelocity());
+        telemetry.update();
+        Thread.sleep(3500);
+        shooter.setVelocity(6);
         kicker.setPosition(0);
         Thread.sleep(1500);
+        kicker.setPosition(1);
+        Thread.sleep(2000);
+        rotateDegrees(120);
+        Thread.sleep(1500);
+        shooter.setVelocity(6);
+        kicker.setPosition(0);
+        Thread.sleep(1000);
         kicker.setPosition(1);
         Thread.sleep(1500);
         rotateDegrees(120);
         Thread.sleep(1500);
+        shooter.setVelocity(6);
         kicker.setPosition(0);
         Thread.sleep(1500);
         kicker.setPosition(1);
-        Thread.sleep(1500);
-        rotateDegrees(120);
-        Thread.sleep(1500);
-        kicker.setPosition(0);
-        Thread.sleep(1500);
-        kicker.setPosition(1);
+        intakeMode = true;
+        rotateDegrees(60);
+        shooter.setVelocity(0);
     }
 
     /*
      * Code to run ONCE when the driver hits PLAY
      */
-    @Override
-    public void start() {
 
-    }
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    @Override
-    public void loop() {
-        //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-        telemetry.addData("encoder", back_left.getCurrentPosition());
-        telemetry.update();
-        float left_x = gamepad1.right_stick_x;
-        float left_y = -gamepad1.left_stick_y;
-        float right_x = -gamepad1.left_stick_x;
-        boolean Intake = gamepad1.right_bumper;
-        float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
 
-        float fr_drive = -(left_y - left_x - right_x)/max;
-        float fl_drive = -(left_y + left_x + right_x)/max;
-        float br_drive = (left_y + left_x - right_x)/max;
-        float bl_drive = -(left_y - left_x + right_x)/max;
-        drive(bl_drive, br_drive, fl_drive, fr_drive);
-
-        if (gamepad1.right_bumper){
-
-            startIntake();
-        }
-        else {
-            stopIntake();
-        }
-//      changing to intake mode and shoot mode
-        if (gamepad1.left_bumper) {
-
-            try {
-                shoot();
-            }
-            catch (InterruptedException ie) {
-            }
-        }
-        else {
-//            if (!intakeMode){
-//                rotateDegrees(60);
-//                intakeMode = true;
-//            }
-            if (!sorter.isBusy()){
-                shooter.setPower(0);
-            }
-        }
-
-        if (gamepad1.b){
-            reverseIntake();
-        }
-        //test
-        if (gamepad1.y){
-            rotateDegrees(120);
-        }
-        else {
-            if (!sorter.isBusy()){
-                shooter.setPower(0);
-            }
-        }
-//      set shooter on and off
-        if (gamepad1.x){
-            shooter.setVelocity(1000);
-
-        }
-        else {
-            shooter.setPower(0);
-
-        }
-        //test color sense
-        if (gamepad1.a)
-        {
-            colorSense();
-        }
-        //kicking out ball
-        if (gamepad1.left_trigger > .5f){
-            kicker.setPosition(0);
-        }
-        else{
-            kicker.setPosition(1);
-        }
-        boolean right = gamepad1.dpad_right;
-        boolean left = gamepad1.dpad_left;
-
-        if (right){
-            rotateDegrees(120);
-        }
-        else if (left){
-            rotateDegrees(-120);
-        }
-    }
 
     public void colorSense() {
         NormalizedRGBA colors = color.getNormalizedColors();
@@ -295,8 +317,4 @@ public class Teleop extends OpMode {
     /*
      * Code to run ONCE after the driver hits STOP
      */
-    @Override
-    public void stop() {
-
-    }
 }

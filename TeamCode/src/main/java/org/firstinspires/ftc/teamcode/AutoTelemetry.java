@@ -36,14 +36,14 @@ public class AutoTelemetry extends AutoFunctionsLinear {
 
                     if (fr_id.equals("red")&& (gamepad1.right_bumper)){
                         if (x>.7){
-                            rotate_degree(2);
+                            rotateDegrees(2);
                         }
                         if (x<-.7){
-                            rotate_degree(-2);
+                            rotateDegrees(-2);
                         }
                     }
                     if (fr_id.equals("blue")){
-                        rotate_degree(-360);
+                        rotateDegrees(-360);
                     }
                 }
             } else {
