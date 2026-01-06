@@ -14,8 +14,18 @@ public class goal extends AutoFunctionsLinear {
         Integer direction = -1;
         waitForStart();
 //2100
-        drive_distance(-1500);
+        drive_distance(-1580);
+        sleep(3000);
         shoot();
+        sleep(3000);
+        rotate_degree(40);
+        sleep(3000);
+        startIntake();
+        sleep(3000);
+        drive_distance(1000);
+        sleep(3000);
+        stopIntake();
+
 //
 //        //rotateDegrees(direction * 290);
 //        drive_distance(-330);

@@ -28,6 +28,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotorEx intake2;
     protected DcMotorEx shooter;
 
+    protected DcMotorEx shooter2;
     //protected ColorSensor color_sensor;
     protected boolean intakeMode = true;
 
@@ -73,9 +74,13 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
         sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        kicker = hardwareMap.get(Servo.class, "kicker");
         //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
     }
 
@@ -123,7 +128,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         drive(0,0,0,0);
     }
 
-    /*protected void rotate_degree(int degree) {
+    protected void rotate_degree(int degree) {
         stopAndResetAll();
 
         back_left.setTargetPosition(degree);
@@ -134,7 +139,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         runToPosition();
 
         runUntilFinished();
-    }*/
+    }
     protected void rotateDegrees(int degrees) {
 
 
@@ -142,13 +147,9 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
         int ticks = 820 * degrees / 360;
         sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        if (degree_count > 1080) {
-            ticks -= 1;
-            degree_count = 0;
-        }
         sorter.setTargetPosition(ticks);
         sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setVelocity(1000);
+        sorter.setVelocity(1080);
 
         // degree_count += degrees;
 
@@ -158,45 +159,113 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     }
     protected void startIntake() {
         intake.setPower(-1);
-        intake2.setPower(-1);
+
         //colorSense();
     }
 
     protected void stopIntake() {
         intake.setPower(0);
-        intake2.setPower(0);
+
+    }
+
+    protected void reverseIntake() {
+        intake.setPower(-1);
     }
     protected void shoot() throws InterruptedException {
+        //kill();
+        LLResult result = limelight.getLatestResult();
+        if(result.getTa() > 0.6) {
+        drive(-0.2f,-0.2f,-0.2f,-0.2f);
+        telemetry.addData("backing", "up");
+        telemetry.update();
+
+
+        }
+        if(result.getTa() < 0.5){
+            drive(0.2f, 0.2f, 0.2f, 0.2f);
+            telemetry.addData("moving", "forward");
+            telemetry.update();
+        }
+
+        if(result.getTx() >2){
+            rotateDegrees(-3);
+            telemetry.addData("turning", "left");
+            telemetry.update();
+        }
+        if(result.getTx() < -2){
+            rotateDegrees(3);
+            telemetry.addData("turning", "right");
+            telemetry.update();
+        }
+        if (intakeMode){
+            rotateDegrees(60);
+            intakeMode = false;
+        }
+        shooter.setPower(-1);
+        Thread.sleep(3000);
+        shooter.setPower(0);
+        shooter.setVelocity(-15);
+        telemetry.addData("velocity", shooter.getVelocity());
+        telemetry.update();
+        Thread.sleep(3500);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        rotateDegrees(120);
+        Thread.sleep(700);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        rotateDegrees(120);
+        Thread.sleep(700);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        intakeMode = true;
+        rotateDegrees(60);
+        shooter.setVelocity(0);
+    }
+    protected void LongShoot() throws InterruptedException {
         //kill();
         if (intakeMode){
             rotateDegrees(60);
             intakeMode = false;
         }
-        shooter.setPower(1);
+        shooter.setPower(-1);
         Thread.sleep(3000);
         shooter.setPower(0);
-        shooter.setVelocity(7);
+        shooter.setVelocity(-20);
         telemetry.addData("velocity", shooter.getVelocity());
         telemetry.update();
-        Thread.sleep(4000);
+        Thread.sleep(3500);
+        shooter.setVelocity(-20);
         kicker.setPosition(0);
         Thread.sleep(1500);
         kicker.setPosition(1);
         Thread.sleep(2000);
         rotateDegrees(120);
-        Thread.sleep(2000);
-        kicker.setPosition(0);
         Thread.sleep(1500);
+        shooter.setVelocity(-20);
+        kicker.setPosition(0);
+        Thread.sleep(1000);
         kicker.setPosition(1);
-        Thread.sleep(2000);
+        Thread.sleep(1500);
         rotateDegrees(120);
         Thread.sleep(1500);
+        shooter.setVelocity(-20);
         kicker.setPosition(0);
         Thread.sleep(1500);
         kicker.setPosition(1);
+        Thread.sleep(800);
         intakeMode = true;
         rotateDegrees(60);
-
+        shooter.setVelocity(0);
     }
     /*protected void shoot() throws InterruptedException {
         /*shooter.setPower(-1);

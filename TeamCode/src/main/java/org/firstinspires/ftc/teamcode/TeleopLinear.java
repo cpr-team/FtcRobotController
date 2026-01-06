@@ -26,59 +26,35 @@ import org.firstinspires.ftc.teamcode.Teleop;
  * added to the Driver Station.
  */
 @TeleOp
-public class TeleopLinear extends LinearOpMode {
+public class TeleopLinear extends AutoFunctionsLinear {
 
 
-    protected DcMotor back_left;
 
-    protected DcMotor back_right;
 
-    protected DcMotor front_left;
 
-    protected DcMotor front_right;
 
-    protected DcMotor intake;
 
-    protected DcMotorEx sorter;
 
-    protected DcMotorEx shooter;
+
+
+
+
+
+
     //private limelight3A limelight;
     protected NormalizedColorSensor color;
-    protected boolean intakeMode = true;
-    protected Servo kicker;
-    protected int degree_count = 0;
+
+
+
 
 
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
-        back_left = hardwareMap.get(DcMotor.class, "back_left_motor") ;
-        back_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        back_right = hardwareMap.get(DcMotor.class, "back_right_motor") ;
-        back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        front_left = hardwareMap.get(DcMotor.class, "front_left_motor") ;
-        front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        front_right = hardwareMap.get(DcMotor.class, "front_right_motor") ;
-        front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        intake = hardwareMap.get(DcMotor.class, "intake") ;
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
-        sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
-        shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
-        kicker = hardwareMap.get(Servo.class, "kicker");
+        super.runOpMode();
 
         //limelight3A = limelight;
         waitForStart();
@@ -96,7 +72,7 @@ public class TeleopLinear extends LinearOpMode {
             float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
 
             float fr_drive = -(left_y - left_x - right_x)/max;
-            float fl_drive = -(left_y + left_x + right_x)/max;
+            float fl_drive = (left_y + left_x + right_x)/max;
             float br_drive = (left_y + left_x - right_x)/max;
             float bl_drive = -(left_y - left_x + right_x)/max;
             drive(bl_drive, br_drive, fl_drive, fr_drive);
@@ -151,7 +127,7 @@ public class TeleopLinear extends LinearOpMode {
             //test color sense
             if (gamepad1.a)
             {
-                colorSense();
+                //colorSense();
             }
             //kicking out ball
             if (gamepad1.left_trigger > .5f){
@@ -172,19 +148,10 @@ public class TeleopLinear extends LinearOpMode {
         }
     }
 
-    protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
-        back_left.setPower(back_left_power);
-        back_right.setPower(back_right_power);
-        front_left.setPower(-front_left_power);
-        front_right.setPower(-front_right_power);
-    }
 
 
-    protected void startIntake() {
 
-        intake.setPower(-1);
-        //colorSense();
-    }
+
 
     protected void sort()
     {
@@ -205,82 +172,24 @@ public class TeleopLinear extends LinearOpMode {
         }
 
     }
-    protected void rotateDegrees(int degrees){
+
 
 
         //int sortpos = sorter.getCurrentPosition();
 
-        int ticks = 820 * degrees / 360;
-        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        if (degree_count >1080){
-            ticks -= 1;
-            degree_count = 0;
-        }
-        sorter.setTargetPosition(ticks);
-        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setVelocity(1000);
-
-       // degree_count += degrees;
-        boolean unbroken = true;
-        while (sorter.isBusy()&&unbroken){
-            if (gamepad1.leftStickButtonWasPressed()){
-                unbroken = false;
-                break;
-            }
-        }
-
-    }
 
 
 
-    protected void stopIntake() {
-        intake.setPower(0);
-    }
 
-    protected void reverseIntake() {
-        intake.setPower(1);
-    }
+
+
     protected void kill(){
         //shooter.setVelocity(0);
         intake.setPower(0);
         sorter.setPower(0);
     }
 
-    protected void shoot() throws InterruptedException {
-        //kill();
-        if (intakeMode){
-            rotateDegrees(60);
-            intakeMode = false;
-        }
-        shooter.setPower(1);
-        Thread.sleep(3000);
-        shooter.setPower(0);
-        shooter.setVelocity(6);
-        telemetry.addData("velocity", shooter.getVelocity());
-        telemetry.update();
-        Thread.sleep(3500);
-        shooter.setVelocity(6);
-        kicker.setPosition(0);
-        Thread.sleep(1500);
-        kicker.setPosition(1);
-        Thread.sleep(2000);
-        rotateDegrees(120);
-        Thread.sleep(1500);
-        shooter.setVelocity(6);
-        kicker.setPosition(0);
-        Thread.sleep(1000);
-        kicker.setPosition(1);
-        Thread.sleep(1500);
-        rotateDegrees(120);
-        Thread.sleep(1500);
-        shooter.setVelocity(6);
-        kicker.setPosition(0);
-        Thread.sleep(1500);
-        kicker.setPosition(1);
-        intakeMode = true;
-        rotateDegrees(60);
-        shooter.setVelocity(0);
-    }
+
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -292,7 +201,7 @@ public class TeleopLinear extends LinearOpMode {
      */
 
 
-    public void colorSense() {
+    /*public void colorSense() {
         NormalizedRGBA colors = color.getNormalizedColors();
 
         float normalizedRed = colors.red / colors.alpha;
@@ -314,6 +223,8 @@ public class TeleopLinear extends LinearOpMode {
 
         telemetry.update();
     }
+    */
+
     /*
      * Code to run ONCE after the driver hits STOP
      */
