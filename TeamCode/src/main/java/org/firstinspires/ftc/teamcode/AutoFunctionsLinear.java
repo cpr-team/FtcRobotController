@@ -8,6 +8,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -23,7 +25,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotor front_left;
     protected DcMotor front_right;
     protected DcMotorEx sorter;
-    protected Map<Integer, String> patterns;
+    protected Map<Integer, Integer> patterns;
     protected DcMotor intake;
     protected DcMotorEx intake2;
     protected DcMotorEx shooter;
@@ -36,17 +38,19 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
     protected Servo kicker;
     Limelight3A limelight;
-
+    protected NormalizedColorSensor color;
+    protected String[] ballPos;
+    protected boolean sensing = false;
+    protected LLResult result = limelight.getLatestResult();
     private double distance;
     @Override
     public void runOpMode() throws InterruptedException {
 
         patterns = new HashMap<>();
-        patterns.put(21,"gpp");
-        patterns.put(22,"pgp");
-        patterns.put(23,"ppg");
-        patterns.put(20,"blue");
-        patterns.put(24,"red");
+        patterns.put(21, 2);
+        patterns.put(22, 0);
+        patterns.put(23, 1);
+
 
 
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
@@ -81,9 +85,38 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         kicker = hardwareMap.get(Servo.class, "kicker");
-        //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-    }
 
+        color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
+        ballPos = new String[3];
+
+    }
+    protected void sort()
+    {
+        if (sensing){
+            String color = colorSense();
+            if (!color.equals("black")){
+                ballPos[0] = color;
+                rotate("right");
+            }
+        }
+
+        int sortpos = sorter.getCurrentPosition();
+        int target = sortpos +240;
+        //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        sorter.setTargetPosition(target);
+        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        sorter.setPower(1);
+        telemetry.addData("sorting","yes");
+        telemetry.addData("sorty", sortpos);
+        telemetry.addData("target",target);
+        telemetry.addData("sortpower", sorter.getPower());
+        telemetry.update();
+        if (sortpos == target){
+            sorter.setPower(0);
+        }
+
+    }
     protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
         back_left.setPower(back_left_power);
         back_right.setPower(back_right_power);
@@ -171,9 +204,9 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected void reverseIntake() {
         intake.setPower(-1);
     }
-    protected void shoot() throws InterruptedException {
+    protected void assistedShoot() throws InterruptedException {
         //kill();
-        LLResult result = limelight.getLatestResult();
+
         if(result.getTa() > 0.6) {
         drive(-0.2f,-0.2f,-0.2f,-0.2f);
         telemetry.addData("backing", "up");
@@ -230,6 +263,44 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         intakeMode = true;
         rotateDegrees(60);
         shooter.setVelocity(0);
+        ballPos = new String[3];
+    }
+    protected void shoot() throws InterruptedException {
+        if (intakeMode){
+            rotateDegrees(60);
+            intakeMode = false;
+        }
+
+        shooter.setPower(-1);
+        Thread.sleep(3000);
+        shooter.setPower(0);
+        shooter.setVelocity(-15);
+        telemetry.addData("velocity", shooter.getVelocity());
+        telemetry.update();
+        Thread.sleep(3500);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        rotateDegrees(120);
+        Thread.sleep(700);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        rotateDegrees(120);
+        Thread.sleep(700);
+        shooter.setVelocity(-15);
+        kicker.setPosition(0);
+        Thread.sleep(700);
+        kicker.setPosition(1);
+        Thread.sleep(700);
+        intakeMode = true;
+        rotateDegrees(60);
+        shooter.setVelocity(0);
+        ballPos = new String[3];
     }
     protected void LongShoot() throws InterruptedException {
         //kill();
@@ -266,6 +337,49 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         intakeMode = true;
         rotateDegrees(60);
         shooter.setVelocity(0);
+    }
+    public String colorSense() {
+        NormalizedRGBA colors = color.getNormalizedColors();
+
+        float normalizedRed = colors.red / colors.alpha;
+        float normalizedBlue = colors.blue / colors.alpha;
+        float normalizedGreen = colors.green / colors.alpha;
+
+        Float normalizedRedGreenRatio = normalizedRed / normalizedGreen;
+        if (normalizedRedGreenRatio > .8f && normalizedRedGreenRatio < 1.2f) {
+            telemetry.addData("color", "purple");
+            rotateDegrees(120);
+            return "purple";
+        } else if (normalizedGreen > 1.2f) {
+            telemetry.addData("color", "green");
+            rotateDegrees(120);
+            return "green";
+        } else {
+            telemetry.addData("color", "black");
+            return "black";
+        }
+
+        //telemetry.update();
+
+    }
+    public void rotate(String direction) {
+        if (direction.equals("right")) {
+            rotateDegrees(120);
+            String[] newBallPos = new String[3];
+            for (int i = 0; i < ballPos.length; i++) {
+                newBallPos[(i + 1) % 3] = ballPos[i];
+            }
+            ballPos = newBallPos;
+        }
+        else {
+            rotateDegrees(-120);
+            String[] newBallPos = new String[3];
+            for (int i = 0; i < ballPos.length; i++) {
+                newBallPos[i] = ballPos[(i + 1)%3];
+            }
+            ballPos = newBallPos;
+        }
+
     }
     /*protected void shoot() throws InterruptedException {
         /*shooter.setPower(-1);
