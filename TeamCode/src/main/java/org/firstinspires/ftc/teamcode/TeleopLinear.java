@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,6 +14,8 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Teleop;
+
+import java.util.List;
 
 /**
  *
@@ -28,11 +31,33 @@ import org.firstinspires.ftc.teamcode.Teleop;
 @TeleOp
 public class TeleopLinear extends AutoFunctionsLinear {
 
+    int currentPattern;
+public void setPattern()
 
+    {
+        List<LLResultTypes.FiducialResult> obelisk = result.getFiducialResults();
 
+        if (!obelisk.isEmpty()) {
 
+                currentPattern = patterns.get(obelisk.get(0).getFiducialId());
 
+        }
+    }
+    public void findGreen() {
+        if (ballPos[currentPattern].equals("green")) {
+            return;
 
+        }
+
+       else if(ballPos[(currentPattern + 1) % 3].equals( "green")){
+            rotate("right");
+            return;
+        }
+       else {
+           rotate("left");
+           return;
+       }
+    }
 
 
 
@@ -80,9 +105,11 @@ public class TeleopLinear extends AutoFunctionsLinear {
             if (gamepad1.right_bumper){
 
                 startIntake();
+                sensing = true;
             }
             else {
                 stopIntake();
+                sensing = false;
             }
 //      changing to intake mode and shoot mode
             if (gamepad1.left_bumper) {

@@ -46,6 +46,10 @@ public class Teleop extends OpMode {
     protected boolean intakeMode = true;
     protected Servo kicker;
     protected int degree_count = 0;
+    protected String[] ballPos;
+    protected boolean sensing = false;
+
+
 
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
@@ -78,6 +82,7 @@ public class Teleop extends OpMode {
         color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
         kicker = hardwareMap.get(Servo.class, "kicker");
 
+        ballPos = new String[3];
         //limelight3A = limelight;
     }
 
@@ -94,8 +99,17 @@ public class Teleop extends OpMode {
         //colorSense();
     }
 
+
     protected void sort()
     {
+        if (sensing){
+            String color = colorSense();
+            if (!color.equals("black")){
+                ballPos[0] = color;
+                rotate("right");
+            }
+        }
+
         int sortpos = sorter.getCurrentPosition();
         int target = sortpos +240;
         //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -201,11 +215,12 @@ public class Teleop extends OpMode {
         drive(bl_drive, br_drive, fl_drive, fr_drive);
 
         if (gamepad1.right_bumper){
-
             startIntake();
+            sensing = true;
         }
         else {
             stopIntake();
+            sensing = false;
         }
 //      changing to intake mode and shoot mode
         if (gamepad1.left_bumper) {
@@ -270,7 +285,7 @@ public class Teleop extends OpMode {
         }
     }
 
-    public void colorSense() {
+    public String colorSense() {
         NormalizedRGBA colors = color.getNormalizedColors();
 
         float normalizedRed = colors.red / colors.alpha;
@@ -281,18 +296,39 @@ public class Teleop extends OpMode {
         if (normalizedRedGreenRatio > .8f && normalizedRedGreenRatio < 1.2f) {
             telemetry.addData("color", "purple");
             rotateDegrees(120);
-        }
-        else if (normalizedGreen > 1.2f) {
+            return "purple";
+        } else if (normalizedGreen > 1.2f) {
             telemetry.addData("color", "green");
             rotateDegrees(120);
-        }
-        else {
+            return "green";
+        } else {
             telemetry.addData("color", "black");
+            return "black";
         }
 
-        telemetry.update();
+        //telemetry.update();
+
     }
-    /*
+    public void rotate(String direction) {
+        if (direction.equals("right")) {
+            rotateDegrees(120);
+            String[] newBallPos = new String[3];
+            for (int i = 0; i < ballPos.length; i++) {
+                newBallPos[(i + 1) % 3] = ballPos[i];
+            }
+            ballPos = newBallPos;
+        }
+        else {
+            rotateDegrees(-120);
+            String[] newBallPos = new String[3];
+            for (int i = 0; i < ballPos.length; i++) {
+                newBallPos[i] = ballPos[(i + 1)%3];
+            }
+            ballPos = newBallPos;
+        }
+
+    }
+        /*
      * Code to run ONCE after the driver hits STOP
      */
     @Override
