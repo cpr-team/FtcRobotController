@@ -14,5 +14,5 @@ public class LongShootAuto extends AutoFunctionsLinear {
         Integer direction = -1;
         waitForStart();
 //2100
-        LongShoot();
+        //LongShoot();
     }}
