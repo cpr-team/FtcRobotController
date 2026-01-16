@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -32,17 +33,7 @@ import java.util.List;
 public class TeleopLinear extends AutoFunctionsLinear {
 
     int currentPattern;
-public void setPattern()
 
-    {
-        List<LLResultTypes.FiducialResult> obelisk = result.getFiducialResults();
-
-        if (!obelisk.isEmpty()) {
-
-                currentPattern = patterns.get(obelisk.get(0).getFiducialId());
-
-        }
-    }
     public void findGreen() {
         if (ballPos[currentPattern].equals("green")) {
             return;
@@ -80,26 +71,34 @@ public void setPattern()
     public void runOpMode() throws InterruptedException {
 
         super.runOpMode();
-
+        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         //limelight3A = limelight;
         waitForStart();
         //shooter.setVelocity(4);
+
         while (opModeIsActive()) {
+            if (sensing){
+                String color = colorSense();
+                if (!color.equals("black")){
+                    ballPos[0] = color;
+                    rotate("right");
+                }
+            }
            // shooter.setVelocity(4);
 
             //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-            telemetry.addData("encoder", back_left.getCurrentPosition());
+            telemetry.addData("encoder", sorter.getCurrentPosition());
             telemetry.update();
-            float left_x = gamepad1.right_stick_x;
-            float left_y = -gamepad1.left_stick_y;
-            float right_x = -gamepad1.left_stick_x;
+            float left_x = -gamepad1.left_stick_y;
+            float left_y = gamepad1.left_stick_x;
+            float right_x = gamepad1.right_stick_x;
             boolean Intake = gamepad1.right_bumper;
             float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
 
-            float fr_drive = -(left_y - left_x - right_x)/max;
+            float fr_drive = (left_y - left_x - right_x)/max;
             float fl_drive = (left_y + left_x + right_x)/max;
             float br_drive = (left_y + left_x - right_x)/max;
-            float bl_drive = -(left_y - left_x + right_x)/max;
+            float bl_drive = (left_y - left_x + right_x)/max;
             drive(bl_drive, br_drive, fl_drive, fr_drive);
 
             if (gamepad1.right_bumper){
@@ -169,8 +168,16 @@ public void setPattern()
             if (right){
                 rotateDegrees(120);
             }
-            else if (left){
-                rotateDegrees(-120);
+//            else if (left){
+//                rotateDegrees(-120);
+//            }
+
+            if(gamepad1.dpad_up){
+                assistedShoot();
+            }
+
+            if(gamepad1.dpad_down){
+                rotate2();
             }
         }
     }
