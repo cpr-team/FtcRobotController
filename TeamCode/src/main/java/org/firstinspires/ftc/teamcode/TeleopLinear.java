@@ -71,7 +71,7 @@ public class TeleopLinear extends AutoFunctionsLinear {
     public void runOpMode() throws InterruptedException {
 
         super.runOpMode();
-        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        //sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         //limelight3A = limelight;
         waitForStart();
         //shooter.setVelocity(4);
@@ -87,19 +87,23 @@ public class TeleopLinear extends AutoFunctionsLinear {
            // shooter.setVelocity(4);
 
             //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
-            telemetry.addData("encoder", sorter.getCurrentPosition());
+            //telemetry.addData("encoder", sorter.getCurrentPosition());
             telemetry.update();
-            float left_x = -gamepad1.left_stick_y;
-            float left_y = gamepad1.left_stick_x;
-            float right_x = gamepad1.right_stick_x;
-            boolean Intake = gamepad1.right_bumper;
-            float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
+            //float left_x = -gamepad1.left_stick_y;
+            //float left_y = gamepad1.left_stick_x;
+            //float right_x = gamepad1.right_stick_x;
+            //boolean Intake = gamepad1.right_bumper;
+            //float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
 
-            float fr_drive = (left_y - left_x - right_x)/max;
-            float fl_drive = (left_y + left_x + right_x)/max;
-            float br_drive = (left_y + left_x - right_x)/max;
-            float bl_drive = (left_y - left_x + right_x)/max;
-            drive(bl_drive, br_drive, fl_drive, fr_drive);
+//            float fr_drive = (left_y - left_x - right_x)/max;
+//            float fl_drive = (left_y + left_x + right_x)/max;
+//            float br_drive = (left_y + left_x - right_x)/max;
+//            float bl_drive = (left_y - left_x + right_x)/max;
+            //drive(bl_drive, br_drive, fl_drive, fr_drive);
+            float left_y = gamepad1.left_stick_y;
+            float right_x = gamepad1.right_stick_x;
+            drive(left_y,-left_y,-left_y,left_y);
+            drive(-right_x,right_x,-right_x,right_x);
 
             if (gamepad1.right_bumper){
 
@@ -157,10 +161,10 @@ public class TeleopLinear extends AutoFunctionsLinear {
             }
             //kicking out ball
             if (gamepad1.left_trigger > .5f){
-                kicker.setPosition(0);
+                //kicker.setPosition(0);
             }
             else{
-                kicker.setPosition(1);
+                //kicker.setPosition(1);
             }
             boolean right = gamepad1.dpad_right;
             boolean left = gamepad1.dpad_left;
@@ -189,21 +193,21 @@ public class TeleopLinear extends AutoFunctionsLinear {
 
     protected void sort()
     {
-        int sortpos = sorter.getCurrentPosition();
-        int target = sortpos +240;
+        //int sortpos = sorter.getCurrentPosition();
+        //int target = sortpos +240;
         //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        sorter.setTargetPosition(target);
-        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setPower(1);
+//        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        sorter.setTargetPosition(target);
+//        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//        sorter.setPower(1);
         telemetry.addData("sorting","yes");
-        telemetry.addData("sorty", sortpos);
-        telemetry.addData("target",target);
-        telemetry.addData("sortpower", sorter.getPower());
+        //telemetry.addData("sorty", sortpos);
+        //telemetry.addData("target",target);
+        //telemetry.addData("sortpower", sorter.getPower());
         telemetry.update();
-        if (sortpos == target){
-            sorter.setPower(0);
-        }
+//        if (sortpos == target){
+//            sorter.setPower(0);
+//        }
 
     }
 
@@ -219,8 +223,8 @@ public class TeleopLinear extends AutoFunctionsLinear {
 
     protected void kill(){
         //shooter.setVelocity(0);
-        intake.setPower(0);
-        sorter.setPower(0);
+//        intake.setPower(0);
+//        sorter.setPower(0);
     }
 
 

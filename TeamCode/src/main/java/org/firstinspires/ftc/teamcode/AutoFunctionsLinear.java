@@ -25,20 +25,20 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotor back_right;
     protected DcMotor front_left;
     protected DcMotor front_right;
-    protected DcMotorEx sorter;
+    //protected DcMotorEx sorter;
     protected Map<Integer, Integer> patterns;
-    protected DcMotor intake;
-    protected DcMotorEx intake2;
-    protected DcMotorEx shooter;
+    //protected DcMotor intake;
+   // protected DcMotorEx intake2;
+   // protected DcMotorEx shooter;
 
     protected DcMotor fan;
-    protected DcMotorEx shooter2;
+    //protected DcMotorEx shooter2;
     //protected ColorSensor color_sensor;
     protected boolean intakeMode = true;
 
     protected int degree_count = 0;
 
-    protected Servo kicker;
+    //protected Servo kicker;
     protected Limelight3A limelight;
     protected NormalizedColorSensor color;
     protected String[] ballPos;
@@ -72,21 +72,21 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setDirection(DcMotor.Direction.REVERSE);
 
-        intake = hardwareMap.get(DcMotor.class, "intake") ;
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-
-        shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
-        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
-        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
-        sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        kicker = hardwareMap.get(Servo.class, "kicker");
+//        intake = hardwareMap.get(DcMotor.class, "intake") ;
+//        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//
+//
+//        shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
+//        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
+//        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
+//        sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+//        kicker = hardwareMap.get(Servo.class, "kicker");
 
 
 
@@ -126,21 +126,21 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     {
 
 
-        int sortpos = sorter.getCurrentPosition();
-        int target = sortpos +240;
+        //int sortpos = sorter.getCurrentPosition();
+       // int target = sortpos +240;
         //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        sorter.setTargetPosition(target);
-        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setPower(1);
+//        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        sorter.setTargetPosition(target);
+//        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//        sorter.setPower(1);
         telemetry.addData("sorting","yes");
-        telemetry.addData("sorty", sortpos);
-        telemetry.addData("target",target);
-        telemetry.addData("sortpower", sorter.getPower());
-        telemetry.update();
-        if (sortpos == target){
-            sorter.setPower(0);
-        }
+//        telemetry.addData("sorty", sortpos);
+//        telemetry.addData("target",target);
+//        telemetry.addData("sortpower", sorter.getPower());
+//        telemetry.update();
+//        if (sortpos == target){
+//            sorter.setPower(0);
+//        }
 
     }
     protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
@@ -205,46 +205,46 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         //int sortpos = sorter.getCurrentPosition();
 
         //int ticks = 824 * degrees / 360;
-        sorter.setTargetPosition(degrees/*sorter.getCurrentPosition() + ticks*/);
-        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setPower(1);
+//        sorter.setTargetPosition(degrees/*sorter.getCurrentPosition() + ticks*/);
+//        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//        sorter.setPower(1);
 
         // degree_count += degrees;
 
-        while (sorter.isBusy()) {
-
-        }
+//        while (sorter.isBusy()) {
+//
+//        }
     }
 
     protected void rotate2() throws InterruptedException{
-        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        sorter.setTargetPosition(270);
-        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        sorter.setPower(1);
-        sleep(2000);
-        sorter.setTargetPosition(540);
-        sorter.setPower(1);
-        sleep(2000);
-        sorter.setTargetPosition(810);
-        sorter.setPower(1);
-        sleep(2000);
-        sorter.setTargetPosition(0);
-        sorter.setPower(1);
+//        sorter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+//        sorter.setTargetPosition(270);
+//        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//        sorter.setPower(1);
+//        sleep(2000);
+//        sorter.setTargetPosition(540);
+//        sorter.setPower(1);
+//        sleep(2000);
+//        sorter.setTargetPosition(810);
+//        sorter.setPower(1);
+//        sleep(2000);
+//        sorter.setTargetPosition(0);
+//        sorter.setPower(1);
 
     }
     protected void startIntake() {
-        intake.setPower(-1);
+        //intake.setPower(-1);
 
-        //colorSense();
+
     }
 
     protected void stopIntake() {
-        intake.setPower(0);
+        //intake.setPower(0);
 
     }
 
     protected void reverseIntake() {
-        intake.setPower(1);
+      //  intake.setPower(1);
     }
     protected void assistedShoot() throws InterruptedException {
         //kill();
@@ -291,39 +291,39 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
             rotateDegrees(120);
             intakeMode = false;
         }
-        shooter.setPower(-1);
-        shooter2.setPower(1);
-        Thread.sleep(3000);
-        shooter.setVelocity(-1500);
-        shooter2.setVelocity(1500);
-        Thread.sleep(3500);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        rotateDegrees(120);
-        Thread.sleep(700);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        rotateDegrees(120);
-        Thread.sleep(700);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        intakeMode = true;
-        rotateDegrees(120);
-        shooter.setVelocity(0);
-        shooter2.setVelocity(0);
-        sorter.setTargetPosition(0);
-        sorter.setPower(1);
+//        shooter.setPower(-1);
+//        shooter2.setPower(1);
+//        Thread.sleep(3000);
+//        shooter.setVelocity(-1500);
+//        shooter2.setVelocity(1500);
+//        Thread.sleep(3500);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        rotateDegrees(120);
+//        Thread.sleep(700);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        rotateDegrees(120);
+//        Thread.sleep(700);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        intakeMode = true;
+//        rotateDegrees(120);
+//        shooter.setVelocity(0);
+//        shooter2.setVelocity(0);
+//        sorter.setTargetPosition(0);
+//        sorter.setPower(1);
 
         ballPos = new String[3];
-        while (sorter.isBusy()) {
-
-        }
+//        while (sorter.isBusy()) {
+//
+//        }
     }
     protected void shoot() throws InterruptedException {
         if (intakeMode){
@@ -334,36 +334,36 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         //shooter.setPower(-1);
         //shooter2.setPower(1);
         //Thread.sleep(3000);
-        shooter.setVelocity(-1300);
-        shooter2.setVelocity(1300);
-        Thread.sleep(3500);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        rotateDegrees(120);
-        Thread.sleep(700);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        rotateDegrees(120);
-        Thread.sleep(700);
-        kicker.setPosition(0);
-        Thread.sleep(700);
-        kicker.setPosition(1);
-        Thread.sleep(700);
-        intakeMode = true;
-        rotateDegrees(60);
-        shooter.setVelocity(0);
-        shooter2.setVelocity(0);
-        sorter.setTargetPosition(0);
-        sorter.setPower(1);
+//        shooter.setVelocity(-1300);
+//        shooter2.setVelocity(1300);
+//        Thread.sleep(3500);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        rotateDegrees(120);
+//        Thread.sleep(700);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        rotateDegrees(120);
+//        Thread.sleep(700);
+//        kicker.setPosition(0);
+//        Thread.sleep(700);
+//        kicker.setPosition(1);
+//        Thread.sleep(700);
+//        intakeMode = true;
+//        rotateDegrees(60);
+//        shooter.setVelocity(0);
+//        shooter2.setVelocity(0);
+//        sorter.setTargetPosition(0);
+//        sorter.setPower(1);
 
         ballPos = new String[3];
-        while (sorter.isBusy()) {
-
-        }
+//        while (sorter.isBusy()) {
+//
+//        }
     }
     /*protected void LongShoot() throws InterruptedException {
         //kill();
