@@ -67,7 +67,7 @@ public abstract class PracticeAFL extends LinearOpMode {
         back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_left = hardwareMap.get(DcMotor.class, "front_left_motor") ;
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        front_left.setDirection(DcMotor.Direction.REVERSE);
         front_right = hardwareMap.get(DcMotor.class, "front_right_motor") ;
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setDirection(DcMotor.Direction.REVERSE);
@@ -143,6 +143,7 @@ public abstract class PracticeAFL extends LinearOpMode {
         //}
 
     }
+
     protected void drive(float back_left_power, float back_right_power, float front_left_power, float front_right_power) {
         back_left.setPower(back_left_power);
         back_right.setPower(back_right_power);
@@ -166,12 +167,23 @@ public abstract class PracticeAFL extends LinearOpMode {
 
     protected void drive_distance(int distance) {
         stopAndResetAll();
-
-        back_left.setTargetPosition(-distance);
-        back_right.setTargetPosition(distance);
-        front_left.setTargetPosition(distance);
-        front_right.setTargetPosition(-distance);
-
+       back_left.setTargetPosition(-distance);
+       back_right.setTargetPosition(distance);
+       front_left.setTargetPosition(distance);
+       front_right.setTargetPosition(-distance);
+//       back_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//      back_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        front_left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        front_right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+       //drive(1,1,1,1);
+//       while(back_left.getCurrentPosition() < distance|| back_right.getCurrentPosition() < distance || front_left.getCurrentPosition() < distance || front_right.getCurrentPosition() < distance){
+//           telemetry.addData("encoder", back_left.getCurrentPosition());
+//           telemetry.addData("BRencoder", back_right.getCurrentPosition());
+//           telemetry.addData("FRencoder", front_right.getCurrentPosition());
+//           telemetry.addData("FLencoder", front_left.getCurrentPosition());
+//            telemetry.update();
+//       }
+        //drive(0,0,0,0);
         runToPosition();
 
 
@@ -179,9 +191,15 @@ public abstract class PracticeAFL extends LinearOpMode {
     }
 
     protected void runUntilFinished() {
-        drive(.25f,.25f,.25f,.25f);
+        drive(0.25f,0.25f,0.25f,0.25f);
 
         while(back_left.isBusy() || back_right.isBusy() || front_left.isBusy() || front_right.isBusy()) {
+            telemetry.addData("BLencoder", back_left.getCurrentPosition());
+           telemetry.addData("BRencoder", back_right.getCurrentPosition());
+           telemetry.addData("FRencoder", front_right.getCurrentPosition());
+           telemetry.addData("FLencoder", front_left.getCurrentPosition());
+            telemetry.update();
+
         }
 
         drive(0,0,0,0);
