@@ -191,7 +191,7 @@ public abstract class PracticeAFL extends LinearOpMode {
     }
 
     protected void runUntilFinished() {
-        drive(0.25f,0.25f,0.25f,0.25f);
+        drive(1f,1f,1f,1f);
 
         while(back_left.isBusy() || back_right.isBusy() || front_left.isBusy() || front_right.isBusy()) {
             telemetry.addData("BLencoder", back_left.getCurrentPosition());
@@ -208,10 +208,10 @@ public abstract class PracticeAFL extends LinearOpMode {
     protected void rotate_degree(int degree) {
         stopAndResetAll();
 
-        back_left.setTargetPosition(degree);
+        back_left.setTargetPosition(-degree);
         back_right.setTargetPosition(-degree);
         front_left.setTargetPosition(degree);
-        front_right.setTargetPosition(-degree);
+        front_right.setTargetPosition(degree);
 
         runToPosition();
 
@@ -292,12 +292,12 @@ public abstract class PracticeAFL extends LinearOpMode {
 //        }
 
             if(result.getTx() > 0){
-                drive(-0.2f,0.2f,-0.2f,0.2f);
+                drive(-1f,1f,-1f,1f);
 
 
             }
             else{
-                drive(0.2f,-0.2f,0.2f,-0.2f);
+                drive(1f,-1f,1f,-1f);
 
 
             }
