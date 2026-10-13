@@ -18,30 +18,39 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous(name = "PedroAuto", group = "Autonomous")
-public class PedroAuto extends LinearOpMode {
+public class PedroAuto extends AutoFunctionsLinear {
 
     private Follower follower;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(35.5913, 11.6282, 90);
-    private final Pose path1 = poseFactory.of(107.7019, 129.8798, 270);
-
+    private final Pose start = poseFactory.of(35, 12, 90);
+    private final Pose path1 = poseFactory.of(58.4101, 39.7442, 90);
+    private final Pose path2 = poseFactory.of(84.192, 102.4101, 270);
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, path1())
+                follow(follower, path1()),
+                detectAprilTag()
+
         );
     }
 
+    private Command detectAprilTag(){
+        return Command.build().setExecute(this::autoLimeLightTest);
+    }
+
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
+        super.runOpMode();
+
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
 
         waitForStart();
+
         schedule(autoRoutine());
 
         while (opModeIsActive()) {
@@ -51,17 +60,26 @@ public class PedroAuto extends LinearOpMode {
             telemetry.addData("x", follower.pose().x());
             telemetry.addData("y", follower.pose().y());
             telemetry.addData("heading", follower.pose().heading());
-
+            telemetry.addData("LLD", LLD);
             if (follower.currentPath() != null) {
                 telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
                 telemetry.addData("Path number", follower.pathIndex());
+            }
+
+            if(!LLD && !follower.isBusy()){
+            follower.follow(path2());
             }
 
             telemetry.update();
         }
     }
 
-    public Path path1() {
+    public Path path1(){
         return line(start, path1).linear(start, path1);
+
+    }
+
+    public Path path2(){
+        return line(path1, path2).linear(path1,path2);
     }
 }

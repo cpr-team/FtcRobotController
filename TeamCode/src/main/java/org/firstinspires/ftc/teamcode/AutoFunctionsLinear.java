@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import java.util.ArrayList;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,7 +31,7 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     //protected DcMotor intake;
    // protected DcMotorEx intake2;
    // protected DcMotorEx shooter;
-
+    protected boolean LLD;
     protected DcMotor fan;
     //protected DcMotorEx shooter2;
     //protected ColorSensor color_sensor;
@@ -45,6 +46,10 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected boolean sensing = false;
 
     private double distance;
+
+    ArrayList<Integer> aprilTags = new ArrayList<>();
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         //setPattern();
@@ -54,7 +59,14 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
         patterns.put(22, 0);
         patterns.put(23, 1);
 
-
+        aprilTags.add(30);
+        aprilTags.add(31);
+        aprilTags.add(32);
+        aprilTags.add(33);
+        aprilTags.add(34);
+        aprilTags.add(35);
+        aprilTags.add(36);
+        aprilTags.add(37);
 
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
         limelight = hardwareMap.get(Limelight3A.class, "limeLight");
@@ -325,6 +337,37 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 //
 //        }
     }
+
+    protected void autoLimeLightTest() {
+        //kill();
+        LLResult result = limelight.getLatestResult();
+
+        if (result.isValid()) {
+            // Access fiducial results
+            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                double x = result.getTx();
+                int fr_id = fr.getFiducialId();
+                telemetry.addData("Tx", x);
+                telemetry.addData("Tag", fr_id);
+                if(fr_id > 29 && fr_id < 38){
+                    LLD = true;
+                }
+            }
+        }
+
+        telemetry.addData("Result", result);
+        telemetry.update();
+
+
+
+            result = limelight.getLatestResult();
+
+
+
+
+    }
+
     protected void shoot() throws InterruptedException {
         if (intakeMode){
             rotateDegrees(60);
