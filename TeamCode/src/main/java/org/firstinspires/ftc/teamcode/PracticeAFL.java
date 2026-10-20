@@ -29,7 +29,7 @@ public abstract class PracticeAFL extends LinearOpMode {
     protected Map<Integer, Integer> patterns;
     //protected DcMotor intake;
     protected DcMotorEx intake2;
-    protected DcMotorEx shooter_motor;
+   // protected DcMotorEx shooter_motor;
 
     protected DcMotor fan;
     //protected DcMotorEx shooter2;
@@ -77,8 +77,8 @@ public abstract class PracticeAFL extends LinearOpMode {
 
 
 
-        shooter_motor = hardwareMap.get(DcMotorEx.class, "shooter_motor") ;
-        shooter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      //  shooter_motor = hardwareMap.get(DcMotorEx.class, "shooter_motor") ;
+      //  shooter_motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
         //shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
