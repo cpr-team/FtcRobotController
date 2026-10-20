@@ -142,14 +142,15 @@ public class PracticeTeleop extends PracticeAFL {
 //                }
 //            }
 //      set shooter on and off
-//            if (gamepad1.x){
-//                shooter_motor.setPower(0.75f);
-////
-//            }
-//            else {
-//               shooter_motor.setPower(0);
-////
-//            }
+
+            if (gamepad1.x){
+             //   shooter_motor.setPower(0.75f);
+//
+            }
+            else {
+           //    shooter_motor.setPower(0);
+//
+            }
             //test color sense
             if (gamepad1.a)
             {

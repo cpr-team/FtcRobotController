@@ -33,6 +33,9 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotorEx intake2;
     protected DcMotorEx shooter;
     protected boolean LLD;
+
+    protected boolean shoot2Done = false;
+    protected boolean limelightDone = false;
     protected DcMotor fan;
     //protected DcMotorEx shooter2;
     //protected ColorSensor color_sensor;
@@ -346,7 +349,30 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 //        }
     }
 
-    protected void autoLimeLightTest() {
+    protected void autoLimeLightTestBlue() {
+        //kill();
+        LLResult result = limelight.getLatestResult();
+
+        if (result.isValid()) {
+            // Access fiducial results
+            List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                double x = result.getTx();
+                int fr_id = fr.getFiducialId();
+//                telemetry.addData("Tx", x);
+//                telemetry.addData("Tag", fr_id);
+                if (fr_id > 38 && fr_id < 46) {
+                    LLD = true;
+                }
+            }
+        }
+
+//        telemetry.addLine("ending limelight");
+//        telemetry.update();
+
+        limelightDone = true;
+    }
+    protected void autoLimeLightTestRed() {
         //kill();
         LLResult result = limelight.getLatestResult();
 
@@ -358,21 +384,25 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
                 int fr_id = fr.getFiducialId();
                 telemetry.addData("Tx", x);
                 telemetry.addData("Tag", fr_id);
-                if(fr_id > 29 && fr_id < 38){
+                if(fr_id > 30 && fr_id < 37){
                     LLD = true;
                 }
             }
         }
 
-        telemetry.addData("Result", result);
+        telemetry.addLine("ending limelight");
         telemetry.update();
 
-
-
-            result = limelight.getLatestResult();
+        limelightDone = true;
     }
 
-    protected void shoot() throws InterruptedException {
+    protected void shoot2() {
+        telemetry.addData("In Do Shoot", true);
+        telemetry.update();
+
+        shoot2Done = true;
+    }
+    protected void shoot() {
         if (intakeMode){
             rotateDegrees(60);
             intakeMode = false;

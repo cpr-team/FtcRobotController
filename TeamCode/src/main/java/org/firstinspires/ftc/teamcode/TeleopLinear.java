@@ -117,11 +117,7 @@ public class TeleopLinear extends AutoFunctionsLinear {
 //      changing to intake mode and shoot mode
             if (gamepad1.left_bumper) {
 
-                try {
-                    shoot();
-                }
-                catch (InterruptedException ie) {
-                }
+               shoot();
             }
             else {
 //            if (!intakeMode){
