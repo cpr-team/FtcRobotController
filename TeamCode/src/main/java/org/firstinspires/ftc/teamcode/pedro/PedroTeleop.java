@@ -10,6 +10,11 @@ import com.pedropathing.follower.ManualDrive;
 public class PedroTeleop extends OpMode {
     private Follower follower;
     @Override
+    public void start(){
+        follower.setPose(LocationStorage.autonomousEndPose);
+        follower.update();
+    }
+    @Override
     public void init() {
         follower = Constants.create(hardwareMap);
     }
@@ -29,3 +34,4 @@ public class PedroTeleop extends OpMode {
         telemetry.addData("Robot Heading", Math.toDegrees(robotPose.heading()));
     }
 }
+

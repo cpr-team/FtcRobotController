@@ -34,21 +34,21 @@ public class TeleopLinear extends AutoFunctionsLinear {
 
     int currentPattern;
 
-    public void findGreen() {
-        if (ballPos[currentPattern].equals("green")) {
-            return;
-
-        }
-
-       else if(ballPos[(currentPattern + 1) % 3].equals( "green")){
-            rotate("right");
-            return;
-        }
-       else {
-           rotate("left");
-           return;
-       }
-    }
+//    public void findGreen() {
+//        if (ballPos[currentPattern].equals("green")) {
+//            return;
+//
+//        }
+//
+//       else if(ballPos[(currentPattern + 1) % 3].equals( "green")){
+//            rotate("right");
+//            return;
+//        }
+//       else {
+//           rotate("left");
+//           return;
+//       }
+//    }
 
 
 
@@ -75,15 +75,15 @@ public class TeleopLinear extends AutoFunctionsLinear {
         //limelight3A = limelight;
         waitForStart();
         //shooter.setVelocity(4);
-
-        while (opModeIsActive()) {
-            if (sensing){
-                String color = colorSense();
-                if (!color.equals("black")){
-                    ballPos[0] = color;
-                    rotate("right");
-                }
-            }
+//
+//        while (opModeIsActive()) {
+//            if (sensing){
+//                String color = colorSense();
+//                if (!color.equals("black")){
+//                    ballPos[0] = color;
+//                    rotate("right");
+//                }
+//            }
            // shooter.setVelocity(4);
 
             //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
@@ -155,12 +155,12 @@ public class TeleopLinear extends AutoFunctionsLinear {
 //
 //            }
             //test color sense
-            if (gamepad1.a)
+            if(gamepad1.a)
             {
                 //colorSense();
             }
             //kicking out ball
-            if (gamepad1.left_trigger > .5f){
+            if(gamepad1.left_trigger > .5f){
                 //kicker.setPosition(0);
             }
             else{
@@ -191,8 +191,8 @@ public class TeleopLinear extends AutoFunctionsLinear {
 
 
 
-    protected void sort()
-    {
+//    protected void sort()
+//    {
         //int sortpos = sorter.getCurrentPosition();
         //int target = sortpos +240;
         //sorter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -200,16 +200,16 @@ public class TeleopLinear extends AutoFunctionsLinear {
 //        sorter.setTargetPosition(target);
 //        sorter.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 //        sorter.setPower(1);
-        telemetry.addData("sorting","yes");
+        //telemetry.addData("sorting","yes");
         //telemetry.addData("sorty", sortpos);
         //telemetry.addData("target",target);
         //telemetry.addData("sortpower", sorter.getPower());
-        telemetry.update();
+       // telemetry.update();
 //        if (sortpos == target){
 //            sorter.setPower(0);
 //        }
 
-    }
+ //   }
 
 
 
@@ -221,11 +221,11 @@ public class TeleopLinear extends AutoFunctionsLinear {
 
 
 
-    protected void kill(){
+   // protected void kill(){
         //shooter.setVelocity(0);
 //        intake.setPower(0);
 //        sorter.setPower(0);
-    }
+ //   }
 
 
 
@@ -266,4 +266,4 @@ public class TeleopLinear extends AutoFunctionsLinear {
     /*
      * Code to run ONCE after the driver hits STOP
      */
-}
+//}

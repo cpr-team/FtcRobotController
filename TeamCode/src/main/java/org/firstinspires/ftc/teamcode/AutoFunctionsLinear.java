@@ -9,6 +9,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -28,9 +29,9 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     protected DcMotor front_right;
     //protected DcMotorEx sorter;
     protected Map<Integer, Integer> patterns;
-    //protected DcMotor intake;
-   // protected DcMotorEx intake2;
-   // protected DcMotorEx shooter;
+    protected DcMotor intake;
+    protected DcMotorEx intake2;
+    protected DcMotorEx shooter;
     protected boolean LLD;
     protected DcMotor fan;
     //protected DcMotorEx shooter2;
@@ -39,9 +40,11 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
     protected int degree_count = 0;
 
-    //protected Servo kicker;
+    protected Servo intakeHold;
+
+    protected Servo ShooterSize;
     protected Limelight3A limelight;
-    protected NormalizedColorSensor color;
+    //protected NormalizedColorSensor color;
     protected String[] ballPos;
     protected boolean sensing = false;
 
@@ -77,20 +80,24 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
         back_right = hardwareMap.get(DcMotor.class, "back_right_motor") ;
         back_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         front_left = hardwareMap.get(DcMotor.class, "front_left_motor") ;
         front_left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        front_left.setDirection(DcMotorSimple.Direction.REVERSE);
 
         front_right = hardwareMap.get(DcMotor.class, "front_right_motor") ;
         front_right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         front_right.setDirection(DcMotor.Direction.REVERSE);
 
-//        intake = hardwareMap.get(DcMotor.class, "intake") ;
-//        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake = hardwareMap.get(DcMotor.class, "intake") ;
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake2 = hardwareMap.get(DcMotorEx.class, "intake2");
+        intake2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //
 //
 //
-//        shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
-//        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter = hardwareMap.get(DcMotorEx.class, "shooter") ;
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 //
 //        shooter2 = hardwareMap.get(DcMotorEx.class, "shooter2");
 //        shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -98,11 +105,12 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 //        sorter = hardwareMap.get(DcMotorEx.class, "sorter") ;
 //        sorter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 //        sorter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-//        kicker = hardwareMap.get(Servo.class, "kicker");
+        intakeHold = hardwareMap.get(Servo.class, "intakeHold");
+        ShooterSize = hardwareMap.get(Servo.class, "ShooterSize");
 
 
 
-        color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
+        //color = hardwareMap.get(NormalizedColorSensor.class, "color_sensor");
         ballPos = new String[3];
 
     }
@@ -245,18 +253,18 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
     }
     protected void startIntake() {
-        //intake.setPower(-1);
+        intake.setPower(-1);
 
 
     }
 
     protected void stopIntake() {
-        //intake.setPower(0);
+        intake.setPower(0);
 
     }
 
     protected void reverseIntake() {
-      //  intake.setPower(1);
+        intake.setPower(1);
     }
     protected void assistedShoot() throws InterruptedException {
         //kill();
@@ -362,10 +370,6 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
 
             result = limelight.getLatestResult();
-
-
-
-
     }
 
     protected void shoot() throws InterruptedException {
@@ -446,49 +450,49 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
     }
 
      */
-    public String colorSense() {
-        NormalizedRGBA colors = color.getNormalizedColors();
-
-        float normalizedRed = colors.red / colors.alpha;
-        float normalizedBlue = colors.blue / colors.alpha;
-        float normalizedGreen = colors.green / colors.alpha;
-
-        Float normalizedRedGreenRatio = normalizedRed / normalizedGreen;
-        if (normalizedRedGreenRatio > .8f && normalizedRedGreenRatio < 1.2f) {
-            telemetry.addData("color", "purple");
-            rotateDegrees(120);
-            return "purple";
-        } else if (normalizedGreen > 1.2f) {
-            telemetry.addData("color", "green");
-            rotateDegrees(120);
-            return "green";
-        } else {
-            telemetry.addData("color", "black");
-            return "black";
-        }
+//    public String colorSense() {
+//        NormalizedRGBA colors = color.getNormalizedColors();
+//
+//        float normalizedRed = colors.red / colors.alpha;
+//        float normalizedBlue = colors.blue / colors.alpha;
+//        float normalizedGreen = colors.green / colors.alpha;
+//
+//        Float normalizedRedGreenRatio = normalizedRed / normalizedGreen;
+//        if (normalizedRedGreenRatio > .8f && normalizedRedGreenRatio < 1.2f) {
+//            telemetry.addData("color", "purple");
+//            rotateDegrees(120);
+//            return "purple";
+//        } else if (normalizedGreen > 1.2f) {
+//            telemetry.addData("color", "green");
+//            rotateDegrees(120);
+//            return "green";
+//        } else {
+//            telemetry.addData("color", "black");
+//            return "black";
+//        }
 
         //telemetry.update();
 
     }
-    public void rotate(String direction) {
-        if (direction.equals("right")) {
-            rotateDegrees(120);
-            String[] newBallPos = new String[3];
-            for (int i = 0; i < ballPos.length; i++) {
-                newBallPos[(i + 1) % 3] = ballPos[i];
-            }
-            ballPos = newBallPos;
-        }
-        else {
-            rotateDegrees(-120);
-            String[] newBallPos = new String[3];
-            for (int i = 0; i < ballPos.length; i++) {
-                newBallPos[i] = ballPos[(i + 1)%3];
-            }
-            ballPos = newBallPos;
-        }
-
-    }
+//    public void rotate(String direction) {
+//        if (direction.equals("right")) {
+//            rotateDegrees(120);
+//            String[] newBallPos = new String[3];
+//            for (int i = 0; i < ballPos.length; i++) {
+//                newBallPos[(i + 1) % 3] = ballPos[i];
+//            }
+//            ballPos = newBallPos;
+//        }
+//        else {
+//            rotateDegrees(-120);
+//            String[] newBallPos = new String[3];
+//            for (int i = 0; i < ballPos.length; i++) {
+//                newBallPos[i] = ballPos[(i + 1)%3];
+//            }
+//            ballPos = newBallPos;
+//        }
+//
+//    }
     /*protected void shoot() throws InterruptedException {
         /*shooter.setPower(-1);
         Thread.sleep(1500);
@@ -539,4 +543,4 @@ public abstract class AutoFunctionsLinear extends LinearOpMode {
 
     //     return "white";
     //     }
-}
+//}

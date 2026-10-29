@@ -89,8 +89,8 @@ public class PracticeTeleop extends PracticeAFL {
             //color_sensor = hardwareMap.get(ColorSensor.class, "color_sensor");
             //telemetry.addData("encoder", sorter.getCurrentPosition());
             telemetry.update();
-            float left_x = gamepad1.left_stick_x;
-            float left_y = -gamepad1.left_stick_y;
+            float left_x = -gamepad1.left_stick_x;
+            float left_y = gamepad1.left_stick_y;
             float right_x = gamepad1.right_stick_x;
             boolean Intake = gamepad1.right_bumper;
             float max = Math.max(Math.abs(left_y)+Math.abs(left_x)+Math.abs(right_x),1.0f);
@@ -142,14 +142,14 @@ public class PracticeTeleop extends PracticeAFL {
 //                }
 //            }
 //      set shooter on and off
-            if (gamepad1.x){
-                shooter_motor.setPower(0.75f);
-//
-            }
-            else {
-               shooter_motor.setPower(0);
-//
-            }
+//            if (gamepad1.x){
+//                shooter_motor.setPower(0.75f);
+////
+//            }
+//            else {
+//               shooter_motor.setPower(0);
+////
+//            }
             //test color sense
             if (gamepad1.a)
             {
